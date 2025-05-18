@@ -1,0 +1,238 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Riel to USD Converter</title>
+  <style>
+    
+    @import url('https://fonts.googleapis.com/css2?family=Times+New+Roman:wght@400;700&display=swap');
+
+    body, .container, h1, label, input, button, .result, table, th, td {
+      font-family: 'Times New Roman', Times, serif !important;
+    }
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+    body {
+      font-family: 'Roboto', Arial, Helvetica, sans-serif;
+      background: linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%);
+      color: #22223b;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      background: #fff;
+      padding: 36px 32px;
+      border-radius: 18px;
+      box-shadow: 0 8px 24px rgba(34, 34, 59, 0.10);
+      width: 100%;
+      max-width: 600px;
+      text-align: center;
+      border: 1.5px solid #a3cef1;
+    }
+
+    h1 {
+      color: #4361ee;
+      font-weight: 700;
+      letter-spacing: 1px;
+      margin-bottom: 18px;
+    }
+
+    form {
+      margin: 24px 0;
+    }
+
+    label {
+      font-size: 1.1rem;
+      color: #22223b;
+      font-weight: 500;
+    }
+
+    input[type="number"] {
+      padding: 12px;
+      font-size: 1rem;
+      width: 85%;
+      margin: 12px 0;
+      border: 1.5px solid #a3cef1;
+      border-radius: 8px;
+      background-color: #f7faff;
+      transition: border 0.2s;
+    }
+
+    input[type="number"]:focus {
+      border: 1.5px solid #4361ee;
+      outline: none;
+    }
+
+    .button-row {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    button {
+      background: linear-gradient(90deg, #4361ee 0%, #48bfe3 100%);
+      color: #fff;
+      padding: 11px 26px;
+      margin: 5px 0;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.08rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+      box-shadow: 0 2px 8px rgba(67, 97, 238, 0.08);
+    }
+
+    button:hover {
+      background: linear-gradient(90deg, #3a0ca3 0%, #4895ef 100%);
+      transform: translateY(-2px) scale(1.03);
+    }
+
+    .result {
+      margin-top: 22px;
+      font-size: 1.08rem;
+      color: #22223b;
+      background: #f1f6fb;
+      border-radius: 8px;
+      padding: 18px 10px;
+      box-shadow: 0 1px 4px rgba(67, 97, 238, 0.04);
+    }
+
+    .result p {
+      margin: 10px 0;
+      font-size: 1.08rem;
+    }
+
+    .result strong {
+      color: #4361ee;
+      font-size: 1.18rem;
+    }
+
+    table {
+      width: 100%;
+      margin-top: 22px;
+      border-collapse: collapse;
+      background-color: #f7faff;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 1px 4px rgba(67, 97, 238, 0.04);
+    }
+
+    th, td {
+      border: 1px solid #a3cef1;
+      padding: 12px 8px;
+      text-align: center;
+    }
+
+    th {
+      background-color: #4361ee;
+      color: #fff;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+    
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Riel to USD Converter</h1>
+    <form id="conversionForm">
+      <label for="number">Enter amount in Riel:</label><br />
+      <input type="number" id="number" name="number" step="1" min="1" required />
+      <div class="button-row">
+        <button type="submit">Convert</button>
+        <button type="button" onclick="viewHistory()">View History</button>
+        <button type="button" onclick="clearHistory()">Clear History</button>
+      </div>
+    </form>
+
+    <div id="result"></div>
+  </div>
+
+  <script>
+    const rate = 4000;
+
+    function numberToWordsEnglish(n) {
+      const words = ["zero","one","two","three","four","five","six","seven","eight","nine","ten","eleven","twelve","thirteen","fourteen","fifteen","sixteen","seventeen","eighteen","nineteen"];
+      const tens = ["", "", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety"];
+
+      if (n < 20) return words[n];
+      if (n < 100) return tens[Math.floor(n / 10)] + (n % 10 ? ' ' + words[n % 10] : '');
+      if (n < 1000) return numberToWordsEnglish(Math.floor(n / 100)) + ' hundred' + (n % 100 ? ' ' + numberToWordsEnglish(n % 100) : '');
+      if (n < 1000000) return numberToWordsEnglish(Math.floor(n / 1000)) + ' thousand' + (n % 1000 ? ' ' + numberToWordsEnglish(n % 1000) : '');
+      return numberToWordsEnglish(Math.floor(n / 1000000)) + ' million' + (n % 1000000 ? ' ' + numberToWordsEnglish(n % 1000000) : '');
+    }
+
+    function numberToWordsKhmer(n) {
+      const khmerWords = {
+        0: 'សូន្យ', 1: 'មួយ', 2: 'ពីរ', 3: 'បី', 4: 'បួន', 5: 'ប្រាំ',
+        6: 'ប្រាំមួយ', 7: 'ប្រាំពីរ', 8: 'ប្រាំបី', 9: 'ប្រាំបួន',
+        10: 'ដប់', 11: 'ដប់មួយ', 12: 'ដប់ពីរ', 13: 'ដប់បី',
+        14: 'ដប់បួន', 15: 'ដប់ប្រាំ', 16: 'ដប់ប្រាំមួយ', 17: 'ដប់ប្រាំពីរ',
+        18: 'ដប់ប្រាំបី', 19: 'ដប់ប្រាំបួន', 20: 'ម្ភៃ', 30: 'សាមសិប',
+        40: 'សែរសិប', 50: 'ហាសិប', 60: 'ហុកសិប', 70: 'ចិតសិប',
+        80: 'ប៉ែតសិប', 90: 'កៅសិប'
+      };
+
+      if (n < 20) return khmerWords[n];
+      if (n < 100) return khmerWords[n - (n % 10)] + (n % 10 ? ' ' + khmerWords[n % 10] : '');
+      if (n < 1000) return numberToWordsKhmer(Math.floor(n / 100)) + ' រយ' + (n % 100 ? ' ' + numberToWordsKhmer(n % 100) : '');
+      if (n < 1000000) return numberToWordsKhmer(Math.floor(n / 1000)) + ' ពាន់' + (n % 1000 ? ' ' + numberToWordsKhmer(n % 1000) : '');
+      return numberToWordsKhmer(Math.floor(n / 1000000)) + ' លាន' + (n % 1000000 ? ' ' + numberToWordsKhmer(n % 1000000) : '');
+    }
+
+    document.getElementById('conversionForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const riel = parseInt(document.getElementById('number').value);
+      const usd = (riel / rate).toFixed(2);
+
+      const eng = numberToWordsEnglish(riel) + ' riel';
+      const kh = numberToWordsKhmer(riel) + ' រៀល';
+      const usdFormatted = `${usd}$`;
+      const rielFormatted = `${riel.toLocaleString()} ៛`;
+
+      const resultHTML = `
+        <div class="result">
+          <p><strong>English Pronunciation:</strong> ${eng}</p>
+          <p><strong>Khmer Pronunciation:</strong> ${kh}</p>
+          <p><strong>Amount in Riel:</strong> ${rielFormatted}</p>
+          <p><strong>Amount in USD:</strong> ${usdFormatted}</p>
+        </div>
+      `;
+      document.getElementById('result').innerHTML = resultHTML;
+
+      const history = JSON.parse(localStorage.getItem('conversionHistory') || '[]');
+      history.push([eng, kh, rielFormatted]);
+      localStorage.setItem('conversionHistory', JSON.stringify(history));
+    });
+
+    function viewHistory() {
+      const history = JSON.parse(localStorage.getItem('conversionHistory') || '[]');
+      if (!history.length) {
+        alert('No history found.');
+        return;
+      }
+
+      let table = '<table><tr><th>English</th><th>Khmer</th><th>Riel</th></tr>';
+      history.forEach(entry => {
+        table += `<tr><td>${entry[0]}</td><td>${entry[1]}</td><td>${entry[2]}</td></tr>`;
+      });
+      table += '</table>';
+      document.getElementById('result').innerHTML = table;
+    }
+
+    function clearHistory() {
+      localStorage.removeItem('conversionHistory');
+      document.getElementById('result').innerHTML = '';
+    }
+  </script>
+</body>
+</html>
